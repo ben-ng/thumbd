@@ -11,8 +11,7 @@ var thumbd = require('../lib'),
 		aws_key: process.env.AWS_KEY,
 		aws_secret: process.env.AWS_SECRET,
 		sqs_queue: process.env.SQS_QUEUE,
-		bucket: process.env.BUCKET,
-		tmp_dir: (process.env.TMP_DIR || '/tmp')
+		bucket: process.env.BUCKET
 	},
 	thumbnailOpts = {
 		aws_key: process.env.AWS_KEY,
@@ -48,7 +47,6 @@ switch (mode) {
 			});
 
 			var grabber = new thumbd.Grabber({
-				tmp_dir: opts.tmp_dir,
 				s3: s3
 			});
 
@@ -57,7 +55,6 @@ switch (mode) {
 			});
 
 			var thumbnailer = new thumbd.Thumbnailer({
-				tmp_dir: opts.tmp_dir
 			});
 
 			(new thumbd.Worker({
