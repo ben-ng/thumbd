@@ -2,7 +2,7 @@
 
 var thumbd = require('../lib'),
 	fs = require('fs'),
-	aws = require('aws-lib'),
+	aws = require('aws-sdk'),
 	knox = require('knox'),
 	argv = require('optimist').argv,
 	mode = argv._.shift(),
@@ -21,6 +21,9 @@ var thumbd = require('../lib'),
 		descriptions: "./data/example.json",
 		remote_image: null
 	};
+
+	aws.config.update({accessKeyId: process.env.AWS_KEY, secretAccessKey: process.env.AWS_SECRET});
+	aws.config.update({region: process.env.AWS_REGION});
 
 function buildOpts(opts) {
 	Object.keys(opts).forEach(function(key) {
@@ -77,11 +80,7 @@ switch (mode) {
 		
 		if (!lastError) {
 			
-			var sqs = aws.createSQSClient(
-				opts.aws_key,
-				opts.aws_secret,
-				{'path': opts.sqs_queue}
-			);
+  		var sqs = new aws.SQS;
 			
 			/**
 				job = {
@@ -93,11 +92,15 @@ switch (mode) {
 					}],
 				}
 			*/
-			sqs.call ( "SendMessage", {MessageBody: JSON.stringify({
-				original: opts.remote_image,
-				descriptions: JSON.parse(fs.readFileSync(opts.descriptions).toString())
-			})}, function (err, result) {
-				console.log(result);
+			sqs.client.sendMessage(
+			{
+        QueueUrl:process.env.SQS_QUEUE,
+        MessageBody: JSON.stringify({
+          original: opts.remote_image,
+          descriptions: JSON.parse(fs.readFileSync(opts.descriptions).toString())
+        })
+			}, function (err, data) {
+				console.log(data);
 			});
 			
 		} else {
