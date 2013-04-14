@@ -18,7 +18,7 @@ Thumbd requires the following environment variables to be set:
 * **AWS_KEY** the key for your AWS account (the IAM user must have access to the appropriate SQS and S3 resources).
 * **AWS_SECRET** the AWS secret key.
 * **BUCKET** the bucket to download the original images from. The thumbnails will also be placed in this bucket.
-* **SQS_QUEUE** the queue to listen for image thumbnaling. Should be in the format `123456789/queue-name`.
+* **SQS_QUEUE** the queue URL to listen for image thumbnaling. You can find this URL from your AWS control panel, it begins with `https://`.
 
 You can export these variables to your environment, or specify them when running the thumbd CLI.
 
